@@ -58,3 +58,9 @@ export interface ApiTokenCreateInput {
   name: string;
   expires_at?: string;
 }
+
+export interface UserUpdateInput {
+  avatar_url?: string;
+  terms_version?: string;
+  privacy_version?: string;
+}
