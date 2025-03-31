@@ -1,6 +1,7 @@
 import { makeEdgeeApiRequest } from './client.js';
 import {
   UserWithRoles,
+  UserUpdateInput,
   Invitation,
   InvitationListResponse,
   InvitationCreateInput,
@@ -24,6 +25,16 @@ export async function getMe(): Promise<UserWithRoles> {
  */
 export async function getUser(id: string): Promise<UserWithRoles> {
   return makeEdgeeApiRequest<UserWithRoles>(`/v1/users/${id}`);
+}
+
+/**
+ * Update a user by ID
+ */
+export async function updateUser(id: string, input: UserUpdateInput): Promise<UserWithRoles> {
+  return makeEdgeeApiRequest<UserWithRoles>(`/v1/users/${id}`, {
+    method: 'POST',
+    body: input,
+  });
 }
 
 // Invitation API

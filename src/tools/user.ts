@@ -123,6 +123,76 @@ export function registerUserTools(server: McpServer): void {
     }
   );
 
+  // Update User
+  server.tool(
+    'edgee-updateUser',
+    'Update a user by ID.',
+    {
+      id: z.string(),
+      avatar_url: z.string().optional(),
+      terms_version: z.string().optional(),
+      privacy_version: z.string().optional(),
+    },
+    async ({ id, avatar_url, terms_version, privacy_version }) => {
+      try {
+        const user = await api.updateUser(id, {
+          avatar_url,
+          terms_version,
+          privacy_version,
+        });
+
+        if (!user) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to update user with ID: ${id}`,
+              },
+            ],
+          };
+        }
+
+        // Format user roles
+        let rolesText = '';
+        if (user.roles && Object.keys(user.roles).length > 0) {
+          const formattedRoles = Object.entries(user.roles).map(([orgId, role]) => `Organization ${orgId}: ${role}`);
+          rolesText = `\nRoles:\n  ${formattedRoles.join('\n  ')}`;
+        }
+
+        const userText = [
+          `User updated successfully:`,
+          `Name: ${user.name || 'Unknown'}`,
+          `ID: ${user.id}`,
+          `Email: ${user.email || 'Unknown'}`,
+          `Avatar URL: ${user.avatar_url || 'None'}`,
+          `Created at: ${user.created_at || 'Unknown'}`,
+          `Updated at: ${user.updated_at || 'Unknown'}`,
+          rolesText,
+        ].join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: userText,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-updateUser:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error updating user: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
   // List Invitations
   server.tool(
     'edgee-listInvitations',
