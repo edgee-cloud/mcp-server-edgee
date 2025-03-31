@@ -1,0 +1,23 @@
+# OS generated files
+DS_Store
+*.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+nbproject
+.buildpath
+.project
+.settings
+.idea
+.vscode
+.direnv
+
+#Specific
+/node_modules
+openapi.json
+dist
