@@ -553,7 +553,7 @@ export function registerProjectTools(server: McpServer): void {
     {
       id: z.string(),
       category: z.enum(['data_collection', 'consent_management']).optional(),
-      subcategory: z.enum(['analytics', 'warehouse', 'attribution', 'conversion_api', 'consent_mapping']).optional(),
+      subcategory: z.enum(['analytics', 'warehouse', 'attribution', 'conversion api', 'consent_mapping']).optional(),
     },
     async ({ id, category, subcategory }) => {
       try {
