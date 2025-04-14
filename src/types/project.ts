@@ -12,11 +12,35 @@ export interface ProjectBase {
   external_project_url?: string;
 }
 
+export interface KeyValueConditions {
+  present?: string[];
+  absent?: string[];
+  values?: Record<string, any>;
+}
+
+export interface CacheRule {
+  path: string;
+  regex?: boolean;
+  ttl?: number;
+  swr?: number;
+  pass?: boolean;
+  rank?: number;
+  conditions?: {
+    request_cookies?: KeyValueConditions;
+    request_headers?: KeyValueConditions;
+    request_query_params?: KeyValueConditions;
+    request_methods?: string[];
+    response_status?: number[];
+    response_headers?: KeyValueConditions;
+  };
+}
+
 export interface ProjectFull {
   log_severity?: 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR';
   edgee_behind_proxy_cache?: boolean;
   force_https?: boolean;
   cache?: boolean;
+  override_cache?: CacheRule[];
   cookie_name?: string;
   cookie_domain?: string;
   proxy_only?: boolean;
@@ -54,6 +78,7 @@ export interface ProjectUpdateInput {
   edgee_behind_proxy_cache?: boolean;
   force_https?: boolean;
   cache?: boolean;
+  override_cache?: CacheRule[];
   cookie_name?: string;
   cookie_domain?: string;
   proxy_only?: boolean;

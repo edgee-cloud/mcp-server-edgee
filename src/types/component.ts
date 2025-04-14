@@ -44,8 +44,8 @@ export interface ComponentListResponse extends ListResponse {
 export interface ComponentCreateInput {
   name: string;
   slug: string;
-  category: 'data_collection';
-  subcategory: 'analytics' | 'warehouse' | 'attribution' | 'conversion api';
+  category: 'data_collection' | 'consent_management';
+  subcategory: 'analytics' | 'warehouse' | 'attribution' | 'conversion_api' | 'consent_mapping';
   documentation_link?: string;
   repo_link?: string;
   description?: string;

@@ -109,13 +109,14 @@ export function registerProjectTools(server: McpServer): void {
           `Log Severity: ${project.log_severity || 'Default'}`,
           `Force HTTPS: ${project.force_https !== undefined ? project.force_https : 'Default'}`,
           `Cache Enabled: ${project.cache !== undefined ? project.cache : 'Default'}`,
+          project.override_cache ? `Override Cache Rules: ${project.override_cache.length}` : '',
           `Cookie Name: ${project.cookie_name || 'Default'}`,
           `Cookie Domain: ${project.cookie_domain || 'None'}`,
           `Proxy Only: ${project.proxy_only !== undefined ? project.proxy_only : 'Default'}`,
           `Inject SDK: ${project.inject_sdk !== undefined ? project.inject_sdk : 'Default'}`,
           `Created at: ${project.created_at || 'Unknown'}`,
           `Updated at: ${project.updated_at || 'Unknown'}`,
-        ].join('\n');
+        ].filter(Boolean).join('\n');
 
         return {
           content: [
@@ -216,6 +217,50 @@ export function registerProjectTools(server: McpServer): void {
       log_severity: z.enum(['DEBUG', 'INFO', 'WARNING', 'ERROR']).optional(),
       force_https: z.boolean().optional(),
       cache: z.boolean().optional(),
+      override_cache: z.array(
+        z.object({
+          path: z.string(),
+          regex: z.boolean().optional(),
+          ttl: z.number().optional(),
+          swr: z.number().optional(),
+          pass: z.boolean().optional(),
+          rank: z.number().optional(),
+          conditions: z
+            .object({
+              request_cookies: z
+                .object({
+                  present: z.array(z.string()).optional(),
+                  absent: z.array(z.string()).optional(),
+                  values: z.record(z.any()).optional(),
+                })
+                .optional(),
+              request_headers: z
+                .object({
+                  present: z.array(z.string()).optional(),
+                  absent: z.array(z.string()).optional(),
+                  values: z.record(z.any()).optional(),
+                })
+                .optional(),
+              request_query_params: z
+                .object({
+                  present: z.array(z.string()).optional(),
+                  absent: z.array(z.string()).optional(),
+                  values: z.record(z.any()).optional(),
+                })
+                .optional(),
+              request_methods: z.array(z.string()).optional(),
+              response_status: z.array(z.number()).optional(),
+              response_headers: z
+                .object({
+                  present: z.array(z.string()).optional(),
+                  absent: z.array(z.string()).optional(),
+                  values: z.record(z.any()).optional(),
+                })
+                .optional(),
+            })
+            .optional(),
+        })
+      ).optional(),
       cookie_name: z.string().optional(),
       cookie_domain: z.string().optional(),
       proxy_only: z.boolean().optional(),
@@ -249,13 +294,14 @@ export function registerProjectTools(server: McpServer): void {
           `Log Severity: ${project.log_severity || 'Default'}`,
           `Force HTTPS: ${project.force_https !== undefined ? project.force_https : 'Default'}`,
           `Cache Enabled: ${project.cache !== undefined ? project.cache : 'Default'}`,
+          project.override_cache ? `Override Cache Rules: ${project.override_cache.length}` : '',
           `Cookie Name: ${project.cookie_name || 'Default'}`,
           `Cookie Domain: ${project.cookie_domain || 'None'}`,
           `Proxy Only: ${project.proxy_only !== undefined ? project.proxy_only : 'Default'}`,
           `Inject SDK: ${project.inject_sdk !== undefined ? project.inject_sdk : 'Default'}`,
           `Created at: ${project.created_at || 'Unknown'}`,
           `Updated at: ${project.updated_at || 'Unknown'}`,
-        ].join('\n');
+        ].filter(Boolean).join('\n');
 
         return {
           content: [
@@ -506,8 +552,8 @@ export function registerProjectTools(server: McpServer): void {
     'List all components for a project.',
     {
       id: z.string(),
-      category: z.enum(['data_collection']).optional(),
-      subcategory: z.enum(['analytics', 'warehouse', 'attribution', 'conversion api']).optional(),
+      category: z.enum(['data_collection', 'consent_management']).optional(),
+      subcategory: z.enum(['analytics', 'warehouse', 'attribution', 'conversion_api', 'consent_mapping']).optional(),
     },
     async ({ id, category, subcategory }) => {
       try {
