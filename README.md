@@ -11,6 +11,8 @@
 </p>
 </div>
 
+[![smithery badge](https://smithery.ai/badge/@edgee-cloud/mcp-server-edgee)](https://smithery.ai/server/@edgee-cloud/mcp-server-edgee)
+
 MCP Server for the Edgee API, enabling organization management, project operations, component management, and user administration through the Model Context Protocol.
 
 ## Features
@@ -80,6 +82,14 @@ MCP Server for the Edgee API, enabling organization management, project operatio
 ### Installation
 
 You can use this MCP server in several ways:
+
+#### Installing via Smithery
+
+To install Edgee Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@edgee-cloud/mcp-server-edgee):
+
+```bash
+npx -y @smithery/cli install @edgee-cloud/mcp-server-edgee --client claude
+```
 
 #### NPX (Recommended)
 
