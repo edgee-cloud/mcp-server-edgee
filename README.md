@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/edgee-cloud-mcp-server-edgee-badge.png)](https://mseep.ai/app/edgee-cloud-mcp-server-edgee)
+
 <div align="center">
 
 <p align="center">
