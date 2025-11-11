@@ -347,6 +347,109 @@ export function registerOrganizationTools(server: McpServer): void {
     }
   );
 
+  // Update Organization User
+  server.tool(
+    'edgee-updateOrganizationUser',
+    'Update a user in an organization.',
+    {
+      id: z.string(),
+      userId: z.string(),
+      role: z.enum(['admin', 'member']),
+    },
+    async ({ id, userId, role }) => {
+      try {
+        const user = await api.updateOrganizationUser(id, userId, { role });
+
+        if (!user) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to update user ${userId} in organization ${id}`,
+              },
+            ],
+          };
+        }
+
+        const userText = [
+          'Organization user updated successfully:',
+          `Name: ${user.name || 'Unknown'}`,
+          `ID: ${user.id}`,
+          `Email: ${user.email || 'Unknown'}`,
+          `Role: ${user.role || 'Unknown'}`,
+          `Created at: ${user.created_at || 'Unknown'}`,
+          `Updated at: ${user.updated_at || 'Unknown'}`,
+        ].join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: userText,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-updateOrganizationUser:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error updating organization user: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Delete Organization User
+  server.tool(
+    'edgee-deleteOrganizationUser',
+    'Delete a user from an organization.',
+    {
+      id: z.string(),
+      userId: z.string(),
+    },
+    async ({ id, userId }) => {
+      try {
+        const result = await api.deleteOrganizationUser(id, userId);
+
+        if (!result || !result.deleted) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to delete user ${userId} from organization ${id}`,
+              },
+            ],
+          };
+        }
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `User ${userId} was successfully removed from organization ${id}.`,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-deleteOrganizationUser:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error deleting organization user: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
   // List Organization Users
   server.tool(
     'edgee-listOrganizationUsers',

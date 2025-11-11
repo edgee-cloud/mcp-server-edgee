@@ -193,6 +193,60 @@ export function registerUserTools(server: McpServer): void {
     }
   );
 
+  // Get Invitation
+  server.tool(
+    'edgee-getInvitation',
+    'Get an invitation by ID.',
+    {
+      id: z.string(),
+    },
+    async ({ id }) => {
+      try {
+        const invitation = await api.getInvitation(id);
+
+        if (!invitation) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to retrieve invitation with ID: ${id}`,
+              },
+            ],
+          };
+        }
+
+        const invitationText = [
+          `Invitation:`,
+          `Email: ${invitation.email || 'Unknown'}`,
+          `ID: ${invitation.id}`,
+          `Organization ID: ${invitation.organization_id || 'Unknown'}`,
+          `Role: ${invitation.role || 'Unknown'}`,
+          `Created at: ${invitation.created_at || 'Unknown'}`,
+        ].join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: invitationText,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-getInvitation:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error retrieving invitation: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
   // List Invitations
   server.tool(
     'edgee-listInvitations',
@@ -359,6 +413,62 @@ export function registerUserTools(server: McpServer): void {
             {
               type: 'text',
               text: `Error deleting invitation: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Get API Token
+  server.tool(
+    'edgee-getApiToken',
+    'Get an API token by ID.',
+    {
+      id: z.string(),
+    },
+    async ({ id }) => {
+      try {
+        const token = await api.getApiToken(id);
+
+        if (!token) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to retrieve API token with ID: ${id}`,
+              },
+            ],
+          };
+        }
+
+        const tokenText = [
+          `API Token: ${token.name || 'Unknown'}`,
+          `ID: ${token.id}`,
+          `User ID: ${token.user_id || 'Unknown'}`,
+          `From Browser: ${token.from_browser ? 'Yes' : 'No'}`,
+          `Last Used At: ${token.last_used_at || 'Never'}`,
+          `Expires At: ${token.expires_at || 'Never'}`,
+          `Created at: ${token.created_at || 'Unknown'}`,
+          `Updated at: ${token.updated_at || 'Unknown'}`,
+        ].join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: tokenText,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-getApiToken:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error retrieving API token: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
           isError: true,
