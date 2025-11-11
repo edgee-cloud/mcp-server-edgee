@@ -428,6 +428,61 @@ export function registerProjectTools(server: McpServer): void {
     }
   );
 
+  // Get Project Domain
+  server.tool(
+    'edgee-getProjectDomain',
+    'Get a domain for a project.',
+    {
+      id: z.string(),
+      name: z.string(),
+    },
+    async ({ id, name }) => {
+      try {
+        const domain = await api.getProjectDomain(id, name);
+
+        if (!domain) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to retrieve domain ${name} for project ${id}`,
+              },
+            ],
+          };
+        }
+
+        const domainText = [
+          `Domain: ${domain.name || 'Unknown'}`,
+          `Project ID: ${domain.project_id}`,
+          `DNS Status: ${domain.dns_status ? 'Valid' : 'Invalid'}`,
+          `SSL Status: ${domain.ssl_status ? 'Valid' : 'Invalid'}`,
+          `Created at: ${domain.created_at || 'Unknown'}`,
+          `Updated at: ${domain.updated_at || 'Unknown'}`,
+        ].join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: domainText,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-getProjectDomain:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error retrieving project domain: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
   // List Project Domains
   server.tool(
     'edgee-listProjectDomains',
@@ -482,6 +537,113 @@ export function registerProjectTools(server: McpServer): void {
             {
               type: 'text',
               text: `Error retrieving project domains: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Update Project Domain
+  server.tool(
+    'edgee-updateProjectDomain',
+    'Update a domain for a project.',
+    {
+      id: z.string(),
+      name: z.string(),
+      dns_status: z.boolean().optional(),
+      ssl_status: z.boolean().optional(),
+    },
+    async ({ id, name, dns_status, ssl_status }) => {
+      try {
+        const domain = await api.updateProjectDomain(id, name, {
+          dns_status,
+          ssl_status,
+        });
+
+        if (!domain) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to update domain ${name} for project ${id}`,
+              },
+            ],
+          };
+        }
+
+        const domainText = [
+          'Domain updated successfully:',
+          `Name: ${domain.name}`,
+          `Project ID: ${domain.project_id}`,
+          `DNS Status: ${domain.dns_status ? 'Valid' : 'Invalid'}`,
+          `SSL Status: ${domain.ssl_status ? 'Valid' : 'Invalid'}`,
+          `Created at: ${domain.created_at || 'Unknown'}`,
+          `Updated at: ${domain.updated_at || 'Unknown'}`,
+        ].join('\n');
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: domainText,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-updateProjectDomain:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error updating project domain: ${error instanceof Error ? error.message : String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+    }
+  );
+
+  // Delete Project Domain
+  server.tool(
+    'edgee-deleteProjectDomain',
+    'Delete a domain from a project.',
+    {
+      id: z.string(),
+      name: z.string(),
+    },
+    async ({ id, name }) => {
+      try {
+        const result = await api.deleteProjectDomain(id, name);
+
+        if (!result || !result.deleted) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: `Failed to delete domain ${name} from project ${id}`,
+              },
+            ],
+          };
+        }
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Domain ${name} was successfully deleted from project ${id}.`,
+            },
+          ],
+        };
+      } catch (error) {
+        console.error('Error in edgee-deleteProjectDomain:', error);
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `Error deleting project domain: ${error instanceof Error ? error.message : String(error)}`,
             },
           ],
           isError: true,
