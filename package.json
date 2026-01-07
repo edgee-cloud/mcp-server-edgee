@@ -31,7 +31,7 @@
     "README.md"
   ],
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.1",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "zod": "^3.25.76"
   },
   "devDependencies": {
